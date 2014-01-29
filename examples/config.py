@@ -13,7 +13,7 @@ import os
 import yaml
 from xdg import BaseDirectory
 
-from zenconf.merged_config import MergedConfig
+from zenconf import MergedConfig
 
 DEFAULTS = {
     'logging': {
