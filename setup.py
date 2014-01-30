@@ -10,10 +10,6 @@ def readme():
         return f.read()
 
 
-requirements_path = os.path.join(os.path.dirname(os.path.normpath(__file__)),
-                                 'requirements.txt')
-
-
 def stripped_reqs(fd):
     return (l.strip() for l in fd)
 
@@ -23,11 +19,8 @@ def parse_requirements(requirements):
         return [l for l in stripped_reqs(f) if l and not l.startswith('#')]
 
 
-reqs = parse_requirements(requirements_path)
-
-
 setup(name='zenconf',
-      version='0.1.0',
+      version='0.1.1',
       description='Simple configuration system based on recursively merging '
                   'dicts.',
       long_description=readme(),
@@ -36,5 +29,5 @@ setup(name='zenconf',
       author_email='alan.bates@news.co.uk',
       license='MIT',
       packages=find_packages(),
-      install_requires=reqs,
+      install_requires=['funcy==0.9', 'pytest==2.5.1'],
       zip_safe=True)
