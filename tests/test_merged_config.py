@@ -1,7 +1,9 @@
 import pytest
 
 from zenconf import MergedConfig, walk_recursive
-
+"""
+To run test, install pytest, then just execute `py.test`.
+"""
 
 class TestMergedConfig(object):
     PREFIX = "TEST"

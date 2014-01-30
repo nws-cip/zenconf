@@ -20,7 +20,7 @@ def parse_requirements(requirements):
 
 
 setup(name='zenconf',
-      version='0.1.1',
+      version='0.1.2',
       description='Simple configuration system based on recursively merging '
                   'dicts.',
       long_description=readme(),
@@ -29,5 +29,5 @@ setup(name='zenconf',
       author_email='alan.bates@news.co.uk',
       license='MIT',
       packages=find_packages(),
-      install_requires=['funcy==0.9', 'pytest==2.5.1'],
+      install_requires=['funcy==0.9'],
       zip_safe=True)
