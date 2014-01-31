@@ -20,7 +20,7 @@ def parse_requirements(requirements):
 
 
 setup(name='zenconf',
-      version='0.1.2',
+      version='0.1.3',
       description='Simple configuration system based on recursively merging '
                   'dicts.',
       long_description=readme(),

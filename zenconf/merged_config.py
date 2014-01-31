@@ -92,9 +92,9 @@ def dict_merge(a, b, dict_boundary):
                     continue
 
                 if not new_dict:
-                    new_dict = {key: v}
+                    new_dict = OrderedDict([(key, v)])
                 else:
-                    new_dict = {key: deepcopy(new_dict)}
+                    new_dict = OrderedDict([(key, deepcopy(new_dict))])
 
             result = dict_merge(result, new_dict, dict_boundary)
         elif k in result and isinstance(result[k], dict):
@@ -178,7 +178,7 @@ class MergedConfig(object):
         the app name will be discarded.
         :return:
         """
-        config = recursive_underscore(recursive_lower(dict(config)))
+        config = recursive_underscore(recursive_lower(OrderedDict(config)))
 
         leading_underscores_regex = re.compile('^_+')
         config = walk_recursive(
@@ -193,7 +193,7 @@ class MergedConfig(object):
             config = funcy.walk_keys(
                 lambda k: re.sub(strip_app_name_regex, '', k), config)
 
-        self._sources.append(dict(config))
+        self._sources.append(config)
 
         return self             # enables a fluent interface
 
@@ -203,7 +203,7 @@ class MergedConfig(object):
         :return: A dict with values merged so later values override earlier
         values
         """
-        merged_config = {}
+        merged_config = OrderedDict()
 
         for source in self._sources:
             merged_config = dict_merge(merged_config, source,

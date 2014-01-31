@@ -12,8 +12,8 @@ dictionary and use it throughout the rest of your code.
 
 Features
 --------
-  * Simple. Just add dicts from wherever you like, and get the merged
-    dictionary back.
+  * Simple. Just add dicts (or OrderedDicts) from wherever you like, and get
+    the merged dictionary back.
   * No constraints on using a particular config file system, arg parser, etc.
   * Key names will be normalised to make for easier comparison between keys
     from different data sources (e.g. from environment variables or yaml files,

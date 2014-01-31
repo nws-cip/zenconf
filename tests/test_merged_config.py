@@ -52,8 +52,7 @@ class TestMergedConfig(object):
                 # renamed the following to lowercase for simplicity in the
                 # ordering test
                 ('myapp', OrderedDict([
-                    ('-handlers', ['syslog', 'stderr']),    # leading underscore
-                                                            #  should be stripped
+                    ('handlers', ['syslog', 'stderr']),
                     ('propagate', True),
                     ('log_level', 'DEBUG'),
                     ])
@@ -164,9 +163,5 @@ class TestMergedConfig(object):
         expected_config = copy.deepcopy(TestMergedConfig.ORDERED_DEFAULTS)
         expected_config['logging']['loggers']['myapp']['propagate'] = False
         expected_config['logging']['loggers']['myapp']['log_level'] = "INFO"
-
-        print
-        print "config: %s" % config
-        print "expected: %s" % expected_config
 
         assert config == expected_config
