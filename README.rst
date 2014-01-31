@@ -24,6 +24,11 @@ Features
     added, e.g. `MYAPP_LOG_LEVEL=debug` could override a commandline argument
     `--log-level`.
 
+Limitations
+-----------
+  * Dictionary keys are normalised during merging to lowercase. If you dict
+    keys must be uppercase/mixed case, normalisation will interfere with that.
+
 Installation
 ------------
 Clone the repo then run `./setup.py install`.

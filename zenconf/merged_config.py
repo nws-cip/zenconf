@@ -38,6 +38,7 @@ the log level could be overridden by an environment variable called
 
 MYAPP_LOGGING__LOGGERS__APP__LOG_LEVEL=INFO
 """
+from collections import OrderedDict
 import functools
 import re
 import funcy

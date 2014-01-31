@@ -1,9 +1,17 @@
+from collections import OrderedDict
+import copy
 import pytest
 
 from zenconf import MergedConfig, walk_recursive
 """
 To run test, install pytest, then just execute `py.test`.
 """
+
+#
+# @todo: key ordering must be preserved. in our code, because the dict gets
+# reshuffled, the log module messes up whinging that no 'syslog' handler exists
+# because it's be moved afterwards in the returned merged dict.
+#
 
 class TestMergedConfig(object):
     PREFIX = "TEST"
@@ -21,6 +29,38 @@ class TestMergedConfig(object):
                 }
             }
         }
+
+    # nested ordered dicts for where order is important
+    ORDERED_DEFAULTS = OrderedDict([
+        ('logging', OrderedDict([
+            ('version', 1),
+            ('handlers', OrderedDict([
+                ('syslog', OrderedDict([
+                    ('level', 'DEBUG'),
+                    ('class', 'logging.handlers.SysLogHandler'),
+                    ('address', '/dev/log'),
+                    ('formatter', 'verbose')
+                    ])),
+                ('stderr', OrderedDict([
+                    ('level', 'DEBUG'),
+                    ('class', 'logging.StreamHandler'),
+                    ('formatter', 'verbose')
+                    ]))
+                ])
+            ),
+            ('loggers', OrderedDict([
+                # renamed the following to lowercase for simplicity in the
+                # ordering test
+                ('myapp', OrderedDict([
+                    ('-handlers', ['syslog', 'stderr']),    # leading underscore
+                                                            #  should be stripped
+                    ('propagate', True),
+                    ('log_level', 'DEBUG'),
+                    ])
+                )])
+            )])
+        )
+    ])
 
     ENV_VARS = {
         PREFIX + "_LOGGING__LOGGERS__MYAPP__LOG_LEVEL": "INFO",  # should take
@@ -105,3 +145,28 @@ class TestMergedConfig(object):
         assert config['logging']['loggers']['myapp']['log_level'] == "INFO"
         assert not config['logging']['loggers']['myapp']['propagate']
         assert len(config['logging']['loggers']['myapp']['handlers']) == 2
+
+    def test_dict_ordering(self, merged_config):
+        """
+        Test that ordering is preserved in dictionaries supplied to
+        MergedConfig
+
+        :param merged_config:
+        :return:
+        """
+        merged_config.add(TestMergedConfig.ORDERED_DEFAULTS)
+        merged_config.add(TestMergedConfig.ENV_VARS,
+                          strip_app_name=True,
+                          filter_by_app_name=True)
+        merged_config.add(TestMergedConfig.CLI_OPTS, strip_app_name=True)
+
+        config = merged_config.get_merged_config()
+        expected_config = copy.deepcopy(TestMergedConfig.ORDERED_DEFAULTS)
+        expected_config['logging']['loggers']['myapp']['propagate'] = False
+        expected_config['logging']['loggers']['myapp']['log_level'] = "INFO"
+
+        print
+        print "config: %s" % config
+        print "expected: %s" % expected_config
+
+        assert config == expected_config
