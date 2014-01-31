@@ -3,3 +3,4 @@ Changes
 0.1.3:
 
 * Switched to using OrderedDicts internally to preserve dict ordering.
+* Key normalisation function is now configurable.

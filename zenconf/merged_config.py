@@ -39,7 +39,6 @@ the log level could be overridden by an environment variable called
 MYAPP_LOGGING__LOGGERS__APP__LOG_LEVEL=INFO
 """
 from collections import OrderedDict
-import functools
 import re
 import funcy
 from copy import deepcopy
@@ -105,9 +104,8 @@ def dict_merge(a, b, dict_boundary):
     return result
 
 
-recursive_lower = functools.partial(walk_recursive, lambda k: str.lower(k))
-recursive_underscore = functools.partial(walk_recursive,
-                                         lambda k: k.replace('-', '_'))
+# regex to remove leading underscores from keys
+leading_underscores_regex = re.compile('^_+')
 
 
 class MergedConfig(object):
@@ -144,7 +142,11 @@ class MergedConfig(object):
             app_name = "%s_" % app_name
         self._app_name = app_name.lower()
 
-    def add(self, config, strip_app_name=False, filter_by_app_name=False):
+    def add(self, config, strip_app_name=False, filter_by_app_name=False,
+            key_normalisation_func=lambda k: re.sub(
+                leading_underscores_regex,
+                '',
+                str.lower(k).replace('-', '_'))):
         """
         Add a dict of config data. Values from later dicts will take precedence
         over those added earlier, so the order data is added matters.
@@ -159,14 +161,15 @@ class MergedConfig(object):
             }
         }
 
-        we could pass an environment variable PREFIX_LOGGING__LEVEL=DEBUG to
-        override the log level.
+        we could pass an environment variable LOGGING__LEVEL=DEBUG to override
+        the log level.
 
-        Note: Key names will be normalised by:
+        Note: Key names will be normalised by recursively applying the
+        key_normalisation_func function. By default this will:
 
-            1) Converting to lowercase
-            2) Replacing hyphens with underscores
-            3) Stripping leading underscores
+            1) Convert keys to lowercase
+            2) Replace hyphens with underscores
+            3) Strip leading underscores
 
         This allows key names from different sources (e.g. CLI args, env vars,
         etc.) to be able to override each other.
@@ -178,11 +181,7 @@ class MergedConfig(object):
         the app name will be discarded.
         :return:
         """
-        config = recursive_underscore(recursive_lower(OrderedDict(config)))
-
-        leading_underscores_regex = re.compile('^_+')
-        config = walk_recursive(
-            lambda k: re.sub(leading_underscores_regex, '', k), config)
+        config = walk_recursive(key_normalisation_func, OrderedDict(config))
 
         if filter_by_app_name:
             config = funcy.compact(funcy.select_keys(

@@ -165,3 +165,22 @@ class TestMergedConfig(object):
         expected_config['logging']['loggers']['myapp']['log_level'] = "INFO"
 
         assert config == expected_config
+
+    def test_key_normalisation_function(self, merged_config):
+        """
+        Test that a custom key normalisation function will be applied
+
+        :param merged_config:
+        :return:
+        """
+        upper_dict = {
+            'key_1': 1,
+            'KEY_2': 2
+        }
+        merged_config.add(upper_dict,
+                          key_normalisation_func=lambda k: str.upper(k))
+
+        config = merged_config.get_merged_config()
+
+        assert 'KEY_1' in config
+        assert 'KEY_2' in config

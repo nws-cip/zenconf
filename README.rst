@@ -15,19 +15,17 @@ Features
   * Simple. Just add dicts (or OrderedDicts) from wherever you like, and get
     the merged dictionary back.
   * No constraints on using a particular config file system, arg parser, etc.
-  * Key names will be normalised to make for easier comparison between keys
-    from different data sources (e.g. from environment variables or yaml files,
-    where one uses underscores to separate words, the other hyphens).
+  * Key names can be normalised by applying a function to keys recursively to
+    make for easier comparison between keys from different data sources
+    (e.g. from environment variables or yaml files,
+    where one uses underscores to separate words, the other hyphens). By
+    default keys will be converted to lowercase, have hyphens converted to
+    underscores and then have leading underscores removed.
   * Support for filtering by, and stripping an app-specific prefix from keys
     (configurable per data source). This means that if your app is called
     `MYAPP`, only environment variables with a prefix of `MYAPP_` could be
     added, e.g. `MYAPP_LOG_LEVEL=debug` could override a commandline argument
     `--log-level`.
-
-Limitations
------------
-  * Dictionary keys are normalised during merging to lowercase. If you dict
-    keys must be uppercase/mixed case, normalisation will interfere with that.
 
 Installation
 ------------
