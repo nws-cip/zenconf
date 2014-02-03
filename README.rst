@@ -35,6 +35,10 @@ Or, install from pypi with:
 
 `pip install zenconf`
 
+Run tests with:
+
+`./setup.py test`
+
 Usage
 -----
 Usage is simple. Just instantiate an instance of

@@ -2,21 +2,26 @@
 import os.path
 
 from setuptools import find_packages, setup
+from setuptools.command.test import test as TestCommand
 
 
 def readme():
     path = os.path.join(os.path.dirname(__file__), 'README.rst')
-    with open(path) as f:
-        return f.read()
+    if os.path.exists(path):
+        with open(path) as f:
+            return f.read()
 
 
-def stripped_reqs(fd):
-    return (l.strip() for l in fd)
-
-
-def parse_requirements(requirements):
-    with open(requirements) as f:
-        return [l for l in stripped_reqs(f) if l and not l.startswith('#')]
+class Tox(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import tox
+        errno = tox.cmdline(self.test_args)
+        sys.exit(errno)
 
 
 setup(name='zenconf',
@@ -30,4 +35,6 @@ setup(name='zenconf',
       license='MIT',
       packages=find_packages(),
       install_requires=['funcy==0.9'],
+      tests_require=['tox'],
+      cmdclass = {'test': Tox},
       zip_safe=True)

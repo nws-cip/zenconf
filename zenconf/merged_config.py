@@ -44,20 +44,35 @@ import funcy
 from copy import deepcopy
 
 
-def walk_recursive(f, dictionary):
+def walk_recursive(f, data):
     """
     Recursively apply a function to all dicts in a nested dictionary
 
     :param f: Function to apply
-    :param dictionary: Dictionary (possibly nested) to recursively apply
+    :param data: Dictionary (possibly nested) to recursively apply
     function to
     :return:
     """
-    results = funcy.walk_keys(f, dictionary)
+    results = {}
+    if isinstance(data, list):
+        return [walk_recursive(f, d) for d in data]
 
-    for k, v in dictionary.iteritems():
-        if isinstance(v, dict):
-            results[f(k)] = walk_recursive(f, v)
+    elif isinstance(data, dict):
+        results = funcy.walk_keys(f, data)
+
+        for k, v in data.iteritems():
+            if isinstance(v, dict):
+                results[f(k)] = walk_recursive(f, v)
+            elif isinstance(v, list):
+                # import pdb
+                # pdb.set_trace()
+                # res = []
+                # for i in v:
+                #     res.append(walk_recursive(f, i))
+                #
+                # print "res is %s" % res
+
+                results[k] = [walk_recursive(f, d) for d in v]
 
     return results
 
@@ -86,6 +101,7 @@ def dict_merge(a, b, dict_boundary):
         if len(exploded_k) > 1:
             new_dict = None
 
+            #@todo: seem to be clobbering existing data with this one... fix it
             for key in reversed(exploded_k):
                 if not key:
                     continue
