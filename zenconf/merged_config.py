@@ -56,7 +56,6 @@ def walk_recursive(f, data):
     results = {}
     if isinstance(data, list):
         return [walk_recursive(f, d) for d in data]
-
     elif isinstance(data, dict):
         results = funcy.walk_keys(f, data)
 
@@ -73,6 +72,8 @@ def walk_recursive(f, data):
                 # print "res is %s" % res
 
                 results[k] = [walk_recursive(f, d) for d in v]
+    else:
+        return f(data)
 
     return results
 
