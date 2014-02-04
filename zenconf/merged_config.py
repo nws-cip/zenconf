@@ -71,7 +71,7 @@ def walk_recursive(f, data):
                 #
                 # print "res is %s" % res
 
-                results[k] = [walk_recursive(f, d) for d in v]
+                results[f(k)] = [walk_recursive(f, d) for d in v]
     else:
         return f(data)
 
