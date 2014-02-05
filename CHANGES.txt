@@ -1,5 +1,9 @@
 Changes
 
+0.1.4:
+
+* Apply the key normalisation function to dicts in lists
+
 0.1.3:
 
 * Switched to using OrderedDicts internally to preserve dict ordering.

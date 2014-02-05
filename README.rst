@@ -42,7 +42,7 @@ Run tests with:
 Usage
 -----
 Usage is simple. Just instantiate an instance of
-zenconf.merged_config.MergedConfig:
+zenconf.MergedConfig:
 
   * The `appname` parameter can be used to namespace keys (such as environment
     variables).

@@ -25,7 +25,7 @@ class Tox(TestCommand):
 
 
 setup(name='zenconf',
-      version='0.1.3',
+      version='0.1.4',
       description='Simple configuration system based on recursively merging '
                   'dicts.',
       long_description=readme(),

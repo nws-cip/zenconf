@@ -23,12 +23,17 @@ class TestMergedConfig(object):
         'list_items': [
             {
                 'mything': {
-                    'name': 'name1'
+                    'sources': [
+                        'source1',
+                        'source2'
+                    ]
                 }
             },
             {
                 'ANOTHER_THING': {
-                    'name': 'name2'
+                    'sources': [
+                        'another-source1'
+                    ]
                 }
             }
         ]
@@ -195,17 +200,23 @@ class TestMergedConfig(object):
         assert 'KEY_2' in config
 
     # def test_dont_clobber_existing_data(self, merged_config):
-    #     # @todo: write a test that passes when we supply:
-    #     # MICKEY_PIPELINES__SKYIQ_DIGITAL_ENGAGEMENT__PREPROCESSORS__OMNITURE__SOURCES=myfile.txt
-    #     # it shouldn't clobber the rest of the preprocessor dict
+    #     """
+    #     Test that we don't clobber existing list entries
     #
+    #     :param merged_config:
+    #     :return:
+    #     """
     #     merged_config.add(TestMergedConfig.DEFAULTS)
-    #     merged_config.add({"LIST_ITEMS__MYTHING__NAME": "newname"},
-    #                       filter_by_app_name=True)
+    #
+    #     # I think the way to do this is to add an option to merge_dict that
+    #     # will look up key values in list items if the current item is a list.
+    #     # there will still be unsupported edge cases, but this should work for
+    #     # most uses...
+    #     merged_config.add({"LIST_ITEMS__MYTHING__SOURCES": "newname"})
     #
     #     config = merged_config.get_merged_config()
     #
     #     print config
     #
     #     # assert config['list_items'][0]['mything']['name'] == 'newname'
-    #     assert config['list_items'][1]['another_thing']['name'] == 'name2'
+    #     # assert config['list_items'][1]['another_thing']['name'] == 'name2'

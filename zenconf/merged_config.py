@@ -63,14 +63,6 @@ def walk_recursive(f, data):
             if isinstance(v, dict):
                 results[f(k)] = walk_recursive(f, v)
             elif isinstance(v, list):
-                # import pdb
-                # pdb.set_trace()
-                # res = []
-                # for i in v:
-                #     res.append(walk_recursive(f, i))
-                #
-                # print "res is %s" % res
-
                 results[f(k)] = [walk_recursive(f, d) for d in v]
     else:
         return f(data)
@@ -124,6 +116,12 @@ def dict_merge(a, b, dict_boundary):
 # regex to remove leading underscores from keys
 leading_underscores_regex = re.compile('^_+')
 
+# default key normalisation function to recursively apply to dict keys
+default_key_normalisation_func = lambda k: re.sub(
+    leading_underscores_regex,
+    '',
+    str.lower(k).replace('-', '_'))
+
 
 class MergedConfig(object):
     """
@@ -160,10 +158,7 @@ class MergedConfig(object):
         self._app_name = app_name.lower()
 
     def add(self, config, strip_app_name=False, filter_by_app_name=False,
-            key_normalisation_func=lambda k: re.sub(
-                leading_underscores_regex,
-                '',
-                str.lower(k).replace('-', '_'))):
+            key_normalisation_func=default_key_normalisation_func):
         """
         Add a dict of config data. Values from later dicts will take precedence
         over those added earlier, so the order data is added matters.
