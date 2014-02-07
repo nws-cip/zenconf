@@ -208,10 +208,8 @@ class TestMergedConfig(object):
     #     """
     #     merged_config.add(TestMergedConfig.DEFAULTS)
     #
-    #     # I think the way to do this is to add an option to merge_dict that
-    #     # will look up key values in list items if the current item is a list.
-    #     # there will still be unsupported edge cases, but this should work for
-    #     # most uses...
+    #     # I think the way to do this is to allow passing an index into the
+          # list to update, e.g. LIST_ITEMS_0__MYTHING__SOURCES
     #     merged_config.add({"LIST_ITEMS__MYTHING__SOURCES": "newname"})
     #
     #     config = merged_config.get_merged_config()

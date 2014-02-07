@@ -117,6 +117,9 @@ def dict_merge(a, b, dict_boundary):
 leading_underscores_regex = re.compile('^_+')
 
 # default key normalisation function to recursively apply to dict keys
+# todo: this shouldn't be blindly applied. Instead, a dicts should be marked
+# as having canonical names. Non-canonical sources will be normalised to those
+# canonical names. This would permit mixed case key names
 default_key_normalisation_func = lambda k: re.sub(
     leading_underscores_regex,
     '',
